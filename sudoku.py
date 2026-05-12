@@ -75,52 +75,32 @@ def units() -> list[list[tuple[int, int]]]:
     unit contains the list of cells that inhabit it. The cells are represented as (i,j)
     tuple coordinates.
 
-    Each cell is a member of exactly one of the 9 rows, columns, and boxes.
+    Each cell is a member of exactly one rows, column, and box.
     """
-    # each cell is a member of exactly one row, column, and box
-    # each cell needs to be added to the correct
-    # row, column, and box that it belongs to
-    # the row it gets added to corresponds to it's i, 0 to 8
-    # the column it gets added to corresponds to it's j, 0 to 8
-    # the box it gets added to corresponds to it's i and j,
-    # box 0: 0 <= i <= 2, 0 <= j <= 2
-    # box 1: 0 <= i <= 2, 3 <= j <= 5
-    # box 2: 0 <= i <= 2, 6 <= j <= 8
-    # box 3: 3 <= i <= 5, 0 <= j <= 2
-    # box 4: 3 <= i <= 5, 3 <= j <= 5
-    # box 5: 3 <= i <= 5, 6 <= j <= 8
-    # box 6: 6 <= i <= 8, 0 <= j <= 2
-    # box 7: 6 <= i <= 8, 3 <= j <= 5
-    # box 8: 6 <= i <= 8, 6 <= j <= 8
-    # to calculate which 3x3 box a cell belongs to,
-    # we label the boxes:
+    # create 3 empty lists that hold the 9 rows, columns, and boxes
+    rows = [[] for _ in range(9)]
+    cols = [[] for _ in range(9)]
+    boxes = [[] for _ in range(9)]
+    # for each cell, calculate which row, column, and box it belongs to
+    # each cell is added to the appropriate row based on its i coordinate
+    # each cell is added to the appropriate col based on its j coordinate
+    # to calculate which box a cell belongs to, the formula is (i//3) * 3 + j
+    # this is because we can label the boxes:
     # 0 1 2
     # 3 4 5
     # 6 7 8
-    # and the cells are represented by (row,col) coordinates
-    # ranging from (0,0) to (8,8)
-    # we can represent the box labels as (i,j) coordinates themselves,
+    # or,
     # (0,0) (0,1) (0,2)
     # (1,0) (1,1) (1,2)
     # (2,0) (2,1) (2,2)
-    # to translate the box-coordinate system back to the original
-    # labels, we calculate i*3 + j
-    # now to map each cell to the new set of coordinates,
-    # we calculate i//3 and j//3 to sort it to the correct box
-    # the formula becomes i//3 * 3 + j//3
-    rows = [[] for _ in range(9)]  # create a list of 9 empty lists
-    cols = [[] for _ in range(9)]  # create a list of 9 empty lists
-    boxes = [[] for _ in range(9)]  # create a list of 9 empty lists
-    # calculate which row, col, and box the cell belongs in
+    # and to map this new coordinate system back to the original 0-8,
+    # the formula becomes (i//3) * 3 + j
     for i in range(9):
         for j in range(9):
-            rows[i].append((i, j))  # add it to the row list
-            cols[j].append((i, j))  # add it to the col list
-            boxes[(i // 3) * 3 + j // 3].append((i, j))  # add to the box list
-    return (
-        rows + cols + boxes
-    )  # returns a list of lists that represent each row, column, and box,
-    # for a row, column, box total of 27
+            rows[i].append((i, j))
+            cols[j].append((i, j))
+            boxes[(i // 3) * 3 + j // 3].append((i, j))
+    return rows + cols + boxes
 
 
 def peers() -> dict[tuple[int, int], set[tuple[int, int]]]:
