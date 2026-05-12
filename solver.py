@@ -115,7 +115,7 @@ def peers() -> dict[tuple[int, int], set[tuple[int, int]]]:
 
 
 def main():
-    myPuzzle = (
+    puzzle = (
         "8........"
         "..36....."
         ".7..9.2.."
@@ -126,9 +126,9 @@ def main():
         "..85...1."
         ".9....4.."
     )
-    myGrid = parse(myPuzzle)
-    display(myGrid)
-    print(is_valid(myGrid))
+    grid = parse(puzzle)
+    display(grid)
+    print(is_valid(grid))
 
 
 main()
