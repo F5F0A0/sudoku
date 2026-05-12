@@ -115,7 +115,17 @@ def peers() -> dict[tuple[int, int], set[tuple[int, int]]]:
 
 
 def main():
-    myPuzzle = "8..........36......7..9.2...5...7.......457.....1...3...1....68..85...1..9....4.."
+    myPuzzle = (
+        "8........"
+        "..36....."
+        ".7..9.2.."
+        ".5...7..."
+        "....457.."
+        "...1...3."
+        "..1....68"
+        "..85...1."
+        ".9....4.."
+    )
     myGrid = parse(myPuzzle)
     display(myGrid)
     print(is_valid(myGrid))
