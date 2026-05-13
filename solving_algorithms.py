@@ -1,8 +1,8 @@
 from sudoku import *
 from cell import *
+import copy as copy
 
 def algorithm_1(sudoku):
-
     """
     A VERY naive alogorithm that checks each cell against the values
     already in its rows and columns. Remove those values from the cell
@@ -20,3 +20,15 @@ def algorithm_1(sudoku):
             sudoku.solved = 1
 
     return sudoku
+
+def algorithm_2(sudoku):
+
+    while not sudoku.solved:
+
+        sudoku.update_all_cells()
+
+        if sudoku.is_solved():
+            sudoku.solved = 1
+
+    return sudoku
+

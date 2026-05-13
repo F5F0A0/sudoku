@@ -7,7 +7,6 @@ class Cell():
         self.row_ID = row_ID
         self.value = value
         self.solved = 0
-        self.past_board_states = []
 
         if self.value != 0:
             self.solved = 1
@@ -21,7 +20,8 @@ class Cell():
             self.possible_values = {1: True, 2: True}
 
     def set_value(self):
-        """We're assuming the first possible value we find is the answer.
+        """
+        We're assuming the first possible value we find is the answer.
         This depends on the rest of the code going well, and is very dodgy.
         """
 
@@ -40,17 +40,32 @@ class Cell():
         for i in range (0, self.sudoku_dimension):
             self.possible_values.append(i+1)
 
-    def remove_possible_value(self, value):
+    def removed_possible_value(self, value):
+        """
+        Tries to remove a given value from the list of possible values
+        for cell. If it succeeds it returns 1 to show a change has been
+        made. Else it returns 0.
+        """
 
         if self.possible_values[value] == True:
             self.possible_values[value] = False
             self.num_possible_values -= 1
+            return 1
 
-    def add_possible_value(self, value):
+        return 0
+
+    def added_possible_value(self, value):
+
+        """
+        Tries to add a given value from the list of possible values
+        for cell. If it succeeds it returns 1 to show a change has been
+        made. Else it returns 0.
+        """
 
         if self.possible_values[value] == False:
             self.possible_values[value] = True
             self.num_possible_values += 1
+            return 1
 
     def is_solvable(self):
         if self.num_possible_values == 1:
@@ -58,14 +73,14 @@ class Cell():
         else:
             return 0
 
-    def value_ID(self):
+    def get_value_ID(self):
         return self.value
 
-    def column_ID(self):
+    def get_column_ID(self):
         return self.column_ID
 
-    def row_ID(self):
+    def get_row_ID(self):
         return self.row_ID
 
-    def cell_ID(self):
+    def get_cell_ID(self):
         return self.cell_ID

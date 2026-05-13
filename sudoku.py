@@ -12,14 +12,42 @@ class Sudoku():
         self.cells = []
         self.solved = 0
         self.past_board_states = []
-
         self.init_rows()
         self.init_columns()
         self.create_cells()
+        self.has_changed = False
 
+    def add_past_board_state(self):
+
+        board_state = {"Rows": self.rows, "Columns": self.columns}
+        self.past_board_states.append(board_state)
+
+    def changed(self):
+        """
+        Updates the has_changed flag to show that the sudoku has
+        changed since the last time an attempt was made to change the
+        grid state. This should update automatically and not be used
+        in your algorithm.
+        """
+
+        self.has_changed = True
+
+    def check_for_change(self):
+        """
+        Checks if the has_changed flag has been set to True. If yes, it
+        sets it to False. Useful to know if your algorithm has made progress
+        since its last loop.
+        """
+
+    def remove_past_board_state(self):
+
+        self.rows = self.past_board_states[-1]["Rows"]
+        self.columns = self.past_board_states[-1]["Columns"]
+        self.past_board_states.pop()
 
     def duplicates(self, array):
-        """On the first encounter with a value this function uses a
+        """
+        On the first encounter with a value this function uses a
         sorted array to mark that value as seen. If it sees that number
         a second time it returns True. Otherwise it returns False.
 
@@ -38,8 +66,10 @@ class Sudoku():
         return 0
 
     def is_solved(self):
-        """Checks for duplicates in all rows and columns. NEED TO
-        ADD 3x3 box for 9x9 sudoku."""
+        """
+        Checks for duplicates in all rows and columns. NEED TO
+        ADD 3x3 box for 9x9 sudoku.
+        """
 
         for cell in self.cells:
             if cell.value == 0:
@@ -55,20 +85,32 @@ class Sudoku():
 
         return True
 
+    def print_grid(self):
+
+        for row in self.rows:
+
+            for cell in row:
+                print(cell.value, end="")
+            print("")
+
     def update_cell(self, cell):
         """
         Updates the possible values a cell can be by checking values in
         its corrisponding row and column. NEED TO ADD 3x3 BOX for the
         9x9 sudoku.
         """
-        row = self.rows[cell.row_ID]
-        column = self.columns[cell.column_ID]
+        row = self.rows[cell.get_row_ID()]
+        column = self.columns[cell.get_column_ID()]
+
         for row_cell in row:
             if row_cell.value !=0:
-                cell.remove_possible_value(row_cell.value)
+                if cell.removed_possible_value(row_cell.value):
+                    self.changed()
+
         for column_cell in column:
             if column_cell.value != 0:
-                cell.remove_possible_value(column_cell.value)
+                if cell.removed_possible_value(column_cell.value):
+                    self.changed()
 
     def update_all_cells(self):
         """
@@ -84,11 +126,9 @@ class Sudoku():
                 pass
             elif cell.is_solvable():
                 cell.set_value()
+                self.changed()
             else:
-                if cell.num_possible_values == 1:
-                    cell.set_value()
-                else:
-                    self.update_cell(cell)
+                self.update_cell(cell)
 
     def row_missing_values(self, row):
 
