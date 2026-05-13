@@ -62,10 +62,9 @@ def display(grid) -> None:
 
 
 def is_valid(grid: list[list[int]]) -> bool:
-    """
-    Return True if no row, column, or box contains a duplicate nonzero value.
+    """Return True if no row, column, or box contains a duplicate nonzero value.
 
-    Does not check completeness, thus an empty grid is valid by this definition.
+    Does not check completeness; an empty grid is valid by this definition.
     """
     for unit in units():
         value_set = set()
@@ -133,11 +132,38 @@ def find_empty(grid: list[list[int]]) -> tuple[int, int] | None:
 
 
 def solve(grid: list[list[int]]) -> bool:
-    pass
+    """
+    Solve the grid in place with backtracking. Return True if solved, False if no
+    solution exists.
+    """
+
+    cell = find_empty(grid)  # find_empty() returns None if the grid is fully solved
+    if cell is None:
+        return True  # the grid is solved
+    i, j = cell  # unpack the tuple (i, j) coordinates from the returned cell
+    for v in range(1, 10):
+        grid[i][j] = v
+        if is_valid(grid) and solve(grid):
+            return True  # found a solution
+        grid[i][j] = 0  # undo if this branch failed
+    return False  # no solution
 
 
 def main():
-    puzzle = (
+    import time
+
+    easy = parse(
+        "53..7...."
+        "6..195..."
+        ".98....6."
+        "8...6...3"
+        "4..8.3..1"
+        "7...2...6"
+        ".6....28."
+        "...419..5"
+        "....8..79"
+    )
+    inkala = parse(
         "8........"
         "..36....."
         ".7..9.2.."
@@ -148,9 +174,15 @@ def main():
         "..85...1."
         ".9....4.."
     )
-    grid = parse(puzzle)
-    display(grid)
-    print(is_valid(grid))
+
+    for name, puzzle in [("easy", easy), ("inkala", inkala)]:
+        print(f"\n{name}:")
+        display(puzzle)
+        t0 = time.time()
+        solved = solve(puzzle)
+        elapsed = time.time() - t0
+        print(f"\nSolved: {solved} in {elapsed:.3f}s")
+        display(puzzle)
 
 
 main()
