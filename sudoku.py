@@ -45,6 +45,8 @@ class Sudoku():
         self.columns = self.past_board_states[-1]["Columns"]
         self.past_board_states.pop()
 
+        self.has_changed = 0
+
     def duplicates(self, array):
         """
         On the first encounter with a value this function uses a
@@ -173,5 +175,31 @@ class Sudoku():
 
         for i in range(0, self.dimension):
             self.columns.append([])
+
+    def get_least_possible_values(self):
+        """
+        Looks for the unsolved cell with the least possible values.
+        Will return the first cell with that amount of possible values.
+        """
+        least_possible = 2
+        found = False
+
+        while not found:
+
+            for row in self.rows:
+                for cell in row:
+                    if cell.num_possible_values() == least_possible:
+                        return cell
+            least_possible += 1
+
+    def get_row(self, ID):
+        return self.rows[ID]
+
+    def get_column(self, ID):
+        return self.column[ID]
+
+
+
+
 
 

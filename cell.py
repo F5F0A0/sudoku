@@ -55,7 +55,6 @@ class Cell():
         return 0
 
     def added_possible_value(self, value):
-
         """
         Tries to add a given value from the list of possible values
         for cell. If it succeeds it returns 1 to show a change has been
@@ -72,6 +71,9 @@ class Cell():
             return 1
         else:
             return 0
+
+    def get_num_possible_values(self):
+        return self.num_possible_values()
 
     def get_value_ID(self):
         return self.value
