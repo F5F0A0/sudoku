@@ -11,6 +11,7 @@ class Sudoku():
         self.columns = []
         self.cells = []
         self.solved = 0
+        self.past_board_states = []
 
         self.init_rows()
         self.init_columns()
@@ -37,6 +38,8 @@ class Sudoku():
         return 0
 
     def is_solved(self):
+        """Checks for duplicates in all rows and columns. NEED TO
+        ADD 3x3 box for 9x9 sudoku."""
 
         for cell in self.cells:
             if cell.value == 0:
@@ -52,42 +55,9 @@ class Sudoku():
 
         return True
 
-    def solve(self):
-        """
-        A VERY naive alogorithm that checks each cell against the values
-        already in its rows and columns. Remove those values from the cell
-        if they have not been already. If a cell is down to one possible
-        value we solve that cell.
-
-        Loop back through if not solved. Hope.
-        """
-
-        while not self.solved:
-
-            for cell in self.cells:
-                if cell.solved == 1:
-                    pass
-                else:
-                    if cell.num_possible_values == 1:
-                        cell.set_value()
-                    else:
-                        self.update_cell(cell)
-
-                if cell.is_solvable():
-                    cell.set_value()
-
-            if self.is_solved():
-                self.solved = 1
-
-        print(self.rows[0][0].value, end="")
-        print(self.rows[0][1].value)
-        print(self.rows[1][0].value, end="")
-        print(self.rows[1][1].value)
-
-
     def update_cell(self, cell):
         """
-        Updates the possible values a cell can be by check values in
+        Updates the possible values a cell can be by checking values in
         its corrisponding row and column. NEED TO ADD 3x3 BOX for the
         9x9 sudoku.
         """
@@ -100,6 +70,26 @@ class Sudoku():
             if column_cell.value != 0:
                 cell.remove_possible_value(column_cell.value)
 
+    def update_all_cells(self):
+        """
+        Makes a single pass through the sudoku grid. If a cell has
+        a single possible value it will solve it. Otherwise it will
+        try to reduce the possible values by comparing to the solved
+        values in its row and column. NEED TO ADD 3x3 BOX for the
+        9x9 sudoku.
+        """
+
+        for cell in self.cells:
+            if cell.solved == 1:
+                pass
+            elif cell.is_solvable():
+                cell.set_value()
+            else:
+                if cell.num_possible_values == 1:
+                    cell.set_value()
+                else:
+                    self.update_cell(cell)
+
     def row_missing_values(self, row):
 
         missing_values = [1] * self.dimension
@@ -111,7 +101,11 @@ class Sudoku():
                 missing_values[cell.value] = 0
 
     def create_cells(self):
-
+        """
+        Instantiates each cell in the sudoku as a class object.
+        Then assigns that cell to its respective row and column.
+        NEEDS TO ADD IT TO 3x3 GRID FOR 9x9 SUDOKU!
+        """
         column = 0
         row = 0
         id = 0

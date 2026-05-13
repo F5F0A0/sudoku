@@ -10,8 +10,12 @@ def main():
 
     solvable_sudoku = Sudoku(sudoku.split(","))
     # solvable_sudoku.solve()
-    algorithm_1(solvable_sudoku)
+    solved_sudoku = algorithm_1(solvable_sudoku)
 
+    for row in solved_sudoku.rows:
+        for cell in row:
+            print(cell.value, end="")
+        print("")
 
 main()
 

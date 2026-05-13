@@ -14,22 +14,9 @@ def algorithm_1(sudoku):
 
     while not sudoku.solved:
 
-        for cell in sudoku.cells:
-            if cell.solved == 1:
-                pass
-            else:
-                if cell.num_possible_values == 1:
-                    cell.set_value()
-                else:
-                    sudoku.update_cell(cell)
-
-            if cell.is_solvable():
-                cell.set_value()
+        sudoku.update_all_cells()
 
         if sudoku.is_solved():
             sudoku.solved = 1
 
-        print(sudoku.rows[0][0].value, end="")
-        print(sudoku.rows[0][1].value)
-        print(sudoku.rows[1][0].value, end="")
-        print(sudoku.rows[1][1].value)
+    return sudoku

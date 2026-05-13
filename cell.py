@@ -7,6 +7,7 @@ class Cell():
         self.row_ID = row_ID
         self.value = value
         self.solved = 0
+        self.past_board_states = []
 
         if self.value != 0:
             self.solved = 1
@@ -20,10 +21,10 @@ class Cell():
             self.possible_values = {1: True, 2: True}
 
     def set_value(self):
-
         """We're assuming the first possible value we find is the answer.
         This depends on the rest of the code going well, and is very dodgy.
         """
+
         for i in range(0,len(self.possible_values)):
             if self.possible_values[i+1] == True:
                 self.value = i+1
@@ -31,6 +32,10 @@ class Cell():
 
 
     def set_possible_values(self):
+        """
+        Gives a cell the proper range of possible values dependent on
+        the size of the sudoku grid.
+        """
 
         for i in range (0, self.sudoku_dimension):
             self.possible_values.append(i+1)
