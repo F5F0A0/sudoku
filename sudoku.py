@@ -71,14 +71,7 @@ class Sudoku():
                     if cell.num_possible_values == 1:
                         cell.set_value()
                     else:
-                        row = self.rows[cell.row_ID]
-                        column = self.columns[cell.column_ID]
-                        for row_cell in row:
-                            if row_cell.value != 0:
-                                cell.remove_possible_value(row_cell.value)
-                        for column_cell in column:
-                            if column_cell.value != 0:
-                                cell.remove_possible_value(column_cell.value)
+                        self.update_cell(cell)
 
                 if cell.is_solvable():
                     cell.set_value()
@@ -91,6 +84,21 @@ class Sudoku():
         print(self.rows[1][0].value, end="")
         print(self.rows[1][1].value)
 
+
+    def update_cell(self, cell):
+        """
+        Updates the possible values a cell can be by check values in
+        its corrisponding row and column. NEED TO ADD 3x3 BOX for the
+        9x9 sudoku.
+        """
+        row = self.rows[cell.row_ID]
+        column = self.columns[cell.column_ID]
+        for row_cell in row:
+            if row_cell.value !=0:
+                cell.remove_possible_value(row_cell.value)
+        for column_cell in column:
+            if column_cell.value != 0:
+                cell.remove_possible_value(column_cell.value)
 
     def row_missing_values(self, row):
 

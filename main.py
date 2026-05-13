@@ -1,4 +1,5 @@
 from sudoku import *
+from solving_algorithms import *
 
 def main():
 
@@ -8,7 +9,9 @@ def main():
     row = 0
 
     solvable_sudoku = Sudoku(sudoku.split(","))
-    solvable_sudoku.solve()
+    # solvable_sudoku.solve()
+    algorithm_1(solvable_sudoku)
+
 
 main()
 
