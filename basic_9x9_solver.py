@@ -62,10 +62,9 @@ def display(grid) -> None:
 
 
 def is_valid(grid: list[list[int]]) -> bool:
-    """
-    Return True if no row, column, or box contains a duplicate nonzero value.
+    """Return True if no row, column, or box contains a duplicate nonzero value.
 
-    Does not check completeness, thus an empty grid is valid by this definition.
+    Does not check completeness; an empty grid is valid by this definition.
     """
     for unit in units():
         value_set = set()
@@ -82,8 +81,8 @@ def is_valid(grid: list[list[int]]) -> bool:
 
 def units() -> list[list[tuple[int, int]]]:
     """
-    Return a list of the 27 sudoku units (9 rows, 9 columns, and 9 boxes). Each
-    unit contains the list of cells that inhabit it. The cells are represented as (i,j)
+    Return a list of the 27 sudoku units (9 rows, 9 columns, and 9 boxes). Each unit
+    contains the list of cells that inhabit it. The cells are represented as (i,j)
     tuple coordinates.
 
     Each cell is a member of exactly one row, column, and box.
@@ -114,8 +113,57 @@ def peers() -> dict[tuple[int, int], set[tuple[int, int]]]:
     pass
 
 
+def is_solved(grid: list[list[int]]) -> bool:
+    """Return True iff the grid is fully filled and has no rule violations."""
+    return all(cell != 0 for row in grid for cell in row) and is_valid(grid)
+
+
+def find_empty(grid: list[list[int]]) -> tuple[int, int] | None:
+    """
+    Return the (i, j) coordinate of the first cell containing 0 or None if the grid
+    is full. Iterates from left to right, top to bottom.
+    """
+    for i in range(9):
+        for j in range(9):
+            cell_value = grid[i][j]
+            if cell_value == 0:
+                return (i, j)
+    return None
+
+
+def solve(grid: list[list[int]]) -> bool:
+    """
+    Solve the grid in place with backtracking. Return True if solved, False if no
+    solution exists.
+    """
+
+    cell = find_empty(grid)  # find_empty() returns None if the grid is fully solved
+    if cell is None:
+        return True  # the grid is solved
+    i, j = cell  # unpack the tuple (i, j) coordinates from the returned cell
+    for v in range(1, 10):
+        grid[i][j] = v
+        if is_valid(grid) and solve(grid):
+            return True  # found a solution
+        grid[i][j] = 0  # undo if this branch failed
+    return False  # no solution
+
+
 def main():
-    puzzle = (
+    import time
+
+    easy = parse(
+        "53..7...."
+        "6..195..."
+        ".98....6."
+        "8...6...3"
+        "4..8.3..1"
+        "7...2...6"
+        ".6....28."
+        "...419..5"
+        "....8..79"
+    )
+    inkala = parse(
         "8........"
         "..36....."
         ".7..9.2.."
@@ -126,9 +174,15 @@ def main():
         "..85...1."
         ".9....4.."
     )
-    grid = parse(puzzle)
-    display(grid)
-    print(is_valid(grid))
+
+    for name, puzzle in [("easy", easy), ("inkala", inkala)]:
+        print(f"\n{name}:")
+        display(puzzle)
+        t0 = time.time()
+        solved = solve(puzzle)
+        elapsed = time.time() - t0
+        print(f"\nSolved: {solved} in {elapsed:.3f}s")
+        display(puzzle)
 
 
 main()
