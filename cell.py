@@ -20,6 +20,7 @@ class Cell():
             self.possible_values = {1: True, 2: True}
 
     def set_value(self):
+
         """We're assuming the first possible value we find is the answer.
         This depends on the rest of the code going well, and is very dodgy.
         """

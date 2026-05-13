@@ -36,33 +36,31 @@ class Sudoku():
 
         return 0
 
-    def check_solved(self):
+    def is_solved(self):
 
         for cell in self.cells:
             if cell.value == 0:
-                return 0
+                return False
 
         for row in self.rows:
             if self.duplicates(row):
-                return 0
+                return False
 
         for column in self.columns:
             if self.duplicates(column):
-                return 0
+                return False
 
-        return 1
-
-    def possible_values(self, array):
-
-        possible_values = [1]*len(array)
-        for i in array:
-            if i == 0:
-                pass
-            else:
-                possible_values[i-1] = 0
-        return possible_values
+        return True
 
     def solve(self):
+        """
+        A VERY naive alogorithm that checks each cell against the values
+        already in its rows and columns. Remove those values from the cell
+        if they have not been already. If a cell is down to one possible
+        value we solve that cell.
+
+        Loop back through if not solved. Hope.
+        """
 
         while not self.solved:
 
@@ -85,7 +83,7 @@ class Sudoku():
                 if cell.is_solvable():
                     cell.set_value()
 
-            if self.check_solved() == 1:
+            if self.is_solved():
                 self.solved = 1
 
         print(self.rows[0][0].value, end="")
@@ -93,33 +91,6 @@ class Sudoku():
         print(self.rows[1][0].value, end="")
         print(self.rows[1][1].value)
 
-    # def get_row(self, cell):
-    #     """Uses a given cells row_ID to obtain that row from this classes
-    #     list of cells. This method is likely very slow and wrong. Should be
-    #     looked into and updated later.
-    #     """
-    #     row = []
-    #     row_start = cell.row_ID * self.dimension
-    #     row_end = row_start + self.dimension
-    #     row = self.cells[row_start:row_start + self.dimension]
-    #
-    #     return row
-    #
-    # def get_column(self, cell):
-    #     """Uses a given cells column_ID to obtain that row from this classes
-    #     list of cells. This method is likely very slow and wrong. Should be
-    #     looked into and updated later.
-    #     """
-    #     column = []
-    #     column_start = cell.column_ID * self.dimension
-    #     column_end = column_start + self.dimension
-    #     i = column_start
-    #
-    #     for i in range(0, len(self.cells)):
-    #         column.append(self.cells[i])
-    #         i += self.dimension
-
-        return column
 
     def row_missing_values(self, row):
 
@@ -160,19 +131,5 @@ class Sudoku():
 
         for i in range(0, self.dimension):
             self.columns.append([])
-
-
-    # def create_columns(self):
-    #
-    #     columns = []
-    #     for i in range(0, 2, 1):
-    #         columns.append([workable_sudoku[i],workable_sudoku[i+2]])
-    #     return columns
-
-
-    # def solve_cell(self):
-    #
-    #     for cell in self.cells:
-    #         if cell.column == 0:
 
 
