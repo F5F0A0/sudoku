@@ -82,8 +82,8 @@ def is_valid(grid: list[list[int]]) -> bool:
 
 def units() -> list[list[tuple[int, int]]]:
     """
-    Return a list of the 27 sudoku units (9 rows, 9 columns, and 9 boxes). Each
-    unit contains the list of cells that inhabit it. The cells are represented as (i,j)
+    Return a list of the 27 sudoku units (9 rows, 9 columns, and 9 boxes). Each unit
+    contains the list of cells that inhabit it. The cells are represented as (i,j)
     tuple coordinates.
 
     Each cell is a member of exactly one row, column, and box.
@@ -111,6 +111,28 @@ def units() -> list[list[tuple[int, int]]]:
 
 
 def peers() -> dict[tuple[int, int], set[tuple[int, int]]]:
+    pass
+
+
+def is_solved(grid: list[list[int]]) -> bool:
+    """Return True iff the grid is fully filled and has no rule violations."""
+    return all(cell != 0 for row in grid for cell in row) and is_valid(grid)
+
+
+def find_empty(grid: list[list[int]]) -> tuple[int, int] | None:
+    """
+    Return the (i, j) coordinate of the first cell containing 0 or None if the grid
+    is full. Iterates from left to right, top to bottom.
+    """
+    for i in range(9):
+        for j in range(9):
+            cell_value = grid[i][j]
+            if cell_value == 0:
+                return (i, j)
+    return None
+
+
+def solve(grid: list[list[int]]) -> bool:
     pass
 
 
