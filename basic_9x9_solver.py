@@ -185,4 +185,5 @@ def main():
         display(puzzle)
 
 
-main()
+if __name__ == "__main__":
+    main()
