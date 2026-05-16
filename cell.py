@@ -7,9 +7,9 @@ class Cell():
         self.row_ID = row_ID
         self.value = value
         self.solved = False
-        self.guessing = False
         self.start_of_branch = False
-        self._values = []
+        self.values = []
+        self.previous_possible_values = {}
 
         if self.value != 0:
             self.solved = True
@@ -19,35 +19,11 @@ class Cell():
         self.sudoku_dimension = sudoku_dimension
         self.num_possible_values = sudoku_dimension
         self.possible_values = []
+
         if self.value == 0:
-            self.possible_values = {1: True, 2: True, 3: True}
-
-    def set_value(self,value):
-        """
-        Sets the cell to the given value. This will condsider the value
-        a guess. If you want to solve the cell use self.set_solve().
-        """
-
-        self.value = value
-        self.guessing = True
-
-
-    def set_possible_values(self):
-        """
-        Gives a cell the proper range of possible values dependent on
-        the size of the sudoku grid.
-        """
-
-        for i in range (0, self.sudoku_dimension):
-            self.possible_values.append(i+1)
-
-    def guess(self):
-
-        for i in range(0,len(self.possible_values)):
-            if self.possible_values[i+1] == True:
-                self.value = i+1
-
-        self.set_guessing(True)
+            self.possible_values = {1: True, 2: True, 3: True,
+                                    4: True, 5: True, 6: True,
+                                    7: True, 8: True, 9: True}
 
     def removed_possible_value(self, value):
         """
@@ -80,7 +56,7 @@ class Cell():
             return 0
 
     def is_start_of_branch(self):
-        if self.get_start_of_branch()
+        return self.get_start_of_branch()
 
     def no_possible_values(self):
 
@@ -96,26 +72,26 @@ class Cell():
         self.set_value(value)
         self.set_solved()
 
-    def unguess(self):
+    def guess_lowest(self):
 
-        if self.is_start_of_branch():
-            if self.
-            self.set_guessing(False)
-            self.
+        possible_values = self.get_possible_values()
+
+        for value in range(0,len(possible_values)):
+
+            if possible_values[value+1] == True:
+                self.set_value(value)
+                self.set_possible_values(value, )
 
     def set_start_of_branch(self, value):
         self.start_of_branch = value
 
-    def set_guessing(self, value):
-        self.guessing = value
-
     def get_num_possible_values(self):
         return self.num_possible_values
 
-    def set_solve(self, value=0):
-        if value = 0:
+    def set_solved(self, value=0):
+        if value == 0:
             for value in self.possible_values:
-                if value = True:
+                if value == True:
                     self.value = value
                     self.solved = True
                     return 0
@@ -128,6 +104,25 @@ class Cell():
             return True
         else:
             return False
+
+    def no_possible_values(self):
+        """
+        Checks if there are any possible values left
+        to guess for this cell.
+        """
+        values = self.get_possible_values()
+
+        for value in values:
+            if value = True:
+                return False
+
+        return True
+
+    def get_possible_values(self):
+        return self.possible_values
+
+    def get_guessed_values(self):
+        return self.guessed_values
 
     def get_start_of_branch(self):
         return self.start_of_branch

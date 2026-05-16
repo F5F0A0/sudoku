@@ -16,8 +16,16 @@ class Sudoku():
         self.create_cells()
         self.has_changed = True
         self.solvable_grid_state = True
-        self.guessed_cells = []
-        self.guessing = False
+
+    def init_rows(self):
+
+        for i in range(0, self.dimension):
+            self.rows.append([])
+
+    def init_columns(self):
+
+        for i in range(0, self.dimension):
+            self.columns.append([])
 
     def changed(self):
         """
@@ -73,11 +81,14 @@ class Sudoku():
         return True
 
     def print_grid(self):
-
+        """
+        Prints current grid state. Need something similar for the
+        eventual GUI (We will totally there!)
+        """
         for row in self.rows:
 
             for cell in row:
-                print(cell.value, end="")
+                print(str(cell.value) + " ", end="")
             print("")
 
     def update_changed(self, value):
@@ -129,7 +140,6 @@ class Sudoku():
                 cell.set_solved()
                 self.update_changed(True)
 
-
     def row_missing_values(self, row):
 
         missing_values = [1] * self.dimension
@@ -164,56 +174,26 @@ class Sudoku():
                 row += 1
             id += 1
 
-    def init_rows(self):
-
-        for i in range(0, self.dimension):
-            self.rows.append([])
-
-    def init_columns(self):
-
-        for i in range(0, self.dimension):
-            self.columns.append([])
-
-    def guess_easiest_cell(self):
+    def easiest_cell(self):
         """
         Looks for the unsolved cell with the least possible values.
-        Uses the lowest value not yet guessed for that cell. Sets that
-        cell as a start of a solving branch. If the board is shown to
-        be unsolvable you can use that cell as a breakpoint when navigating
-        backwards to the last solvable board state.
+        Returns that cell.
         """
-        least_possible = 2
-        found = False
+        least_possible = 0
 
-        while not found:
+        for row in self.rows:
+            for cell in row:
+                if cell.get_num_possible_values() == least_possible:
+                    return cell
 
-            for row in self.rows:
-                for cell in row:
-                    if cell.get_num_possible_values() == least_possible:
-                        cell.guess()
-                        cell.set_start_of_branch(True)
-                        self.set_guessing(True)
-                        self.add_guessed_cell(cell)
-                        self.update_changed(True)
+        least_possible += 1
 
-                        return 0
+    def no_blank_cells(self):
+        for cell in self.cells:
+            if cell.no_possible_values():
+                return False
 
-            least_possible += 1
-
-    def revert_to_last_known_solvable(self):
-
-        guessed_cells = self.get_guessed_cells()
-        index = len(guessed_cells)-1,
-
-        for in range(index, 0, -1):
-            guessed_cells[i].
-
-
-    def add_guessed_cell(self, cell):
-        self.guessed_cells.append(cell)
-
-    def set_guessing(self, value):
-        self.guessing = value
+        return True
 
     def set_solvable_grid_state(self, value):
         self.solvable_grid_state = value
@@ -221,14 +201,17 @@ class Sudoku():
     def is_solvable_grid_state(self):
         return self.solvable_grid_state
 
-    def get_guessed_cells(self):
-        return self.guessed_cells
-
     def get_row(self, ID):
         return self.rows[ID]
 
     def get_column(self, ID):
         return self.column[ID]
+
+    def add_solved_cell(self, cell):
+        self.solved_cells.append(cell)
+
+    def remove_solved_cell(self, cell):
+        self.solved_cells.pop()
 
 
 

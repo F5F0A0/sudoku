@@ -1,5 +1,6 @@
 from sudoku import *
 from cell import *
+import copy as copy
 
 def algorithm_1(sudoku):
     """
@@ -15,34 +16,41 @@ def algorithm_1(sudoku):
 
         sudoku.update_all_cells()
 
-        if sudoku.is_solved():
-            sudoku.solved = 1
-
     return sudoku
 
 def algorithm_2(sudoku):
     """
-    The idea for this recursive algorithm is to use the naive algorithm until
-    it hits a wall. Then this algorithm will simply find the first cell with
-    two possible values and guess the lower value. If this algorithm runs into
-    a cell with 0 possible values then it will revert to the last time it guessed
-    a value and guess the next highest possible value.
+    A simple recursive algorithm. First tries to solve the sudoku
+    by comparing unsolved cells to solved cells and hoping that
+    there is enough information to solve all the cells by looping
+    through the Sudoku.
 
-    And then I need a way to guess
-    the lower value and have it auto update that there has been a change in the
-    sudoku grid.
+    If this algorithm gets through a loop of trying to solve all
+    the cells in this manor, and the Sudoku has not progressed,
+    then this alogrithm will choose the cell with the least possible
+    values and guess the lowest possible value. This starts a new
+    branch.
+
+    If this alogrithm hits a cell with 0 possible value it will
+    revert back to the start of the last branch and guess the next
+    highest value. If all values have been guessed for that cell
+    then the algorithm will go back to the branch previous to that
+    one.
     """
 
-    while True:
+    while not sudoku.solved:
 
-        if sudoku.is_solvable_grid_state():
-            if sudoku.changed():
-                sudoku.update_all_cells()
-            else:
-                sudoku.guess_easiest_cell()
-            if sudoku.is_solved():
-                return sudoku
+        if sudoku.no_blank_cells():
+            sudoku.update_all_cells()
+
+            if not sudoku.changed():
+
+                cell = sudoku.get_easiest_cell()
+                cell.guess_lowest()
+                solved. algorithm_2(sudoku)
 
         else:
-            sudoku.revert_to_last_known_solvable()
 
+            return 0
+
+    return sudoku
