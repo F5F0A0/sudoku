@@ -38,19 +38,26 @@ def algorithm_2(sudoku):
     one.
     """
 
+    sudoku.guessed_cells = []
+
     while not sudoku.solved:
 
-        if sudoku.no_blank_cells():
-            sudoku.update_all_cells()
+        sudoku.update_all_cells()
 
-            if not sudoku.changed():
+        if not sudoku.changed():
 
-                cell = sudoku.get_easiest_cell()
+            cell = sudoku.easiest_cell()
+            guessing = True
+            while not cell.no_possible_values():
                 cell.guess_lowest()
-                solved. algorithm_2(sudoku)
+                possibly_solved_sudoku = algorithm_2(copy.deepcopy(sudoku))
 
-        else:
+                if possibly_solved_sudoku.is_solved():
+                    sudoku = possibly_solved_sudoku
 
-            return 0
+                else:
+                    cell.update_solved(False)
 
-    return sudoku
+        if not sudoku.no_blank_cells():
+
+            break

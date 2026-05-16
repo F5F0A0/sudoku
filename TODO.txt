@@ -1,0 +1,21 @@
+Sudoku Program
+
+- file structure
+- test driven development / test cases, making code testable
+    - Mockito
+- software requirements specification (SRS)
+- OCR
+    - any user image
+    - pull from NYT daily puzzles
+- check if unique solution exists
+- representing it as a graph problem
+- report metrics like solve time, operations/iterations
+- handle different sized puzzles (and a standard 9x9)
+- report no solutions, or handle other errors like invalid input
+- handling of extremely large inputs, crash/error handling
+- GUI
+- cell/grid representation
+- finding all solutions if no unique solution
+
+
+MVP

@@ -76,11 +76,12 @@ class Cell():
 
         possible_values = self.get_possible_values()
 
-        for value in range(0,len(possible_values)):
+        for value in range(1,len(possible_values)+1):
 
-            if possible_values[value+1] == True:
+            if possible_values[value] == True:
                 self.set_value(value)
-                self.set_possible_values(value, )
+                self.set_possible_values(value, False)
+                self.set_solved()
 
     def set_start_of_branch(self, value):
         self.start_of_branch = value
@@ -113,10 +114,19 @@ class Cell():
         values = self.get_possible_values()
 
         for value in values:
-            if value = True:
+            if values[value] == True:
                 return False
 
         return True
+
+    def update_solved(self, value):
+        self.solved = value
+
+    def set_possible_values(self, value, possible):
+        self.possible_values[value] = possible
+
+    def set_value(self, value):
+        self.value = value
 
     def get_possible_values(self):
         return self.possible_values

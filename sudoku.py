@@ -15,7 +15,7 @@ class Sudoku():
         self.init_columns()
         self.create_cells()
         self.has_changed = True
-        self.solvable_grid_state = True
+        self.guessed_cells = []
 
     def init_rows(self):
 
@@ -112,7 +112,7 @@ class Sudoku():
         for row_cell in row:
             if row_cell.value !=0:
                 if cell.removed_possible_value(row_cell.value):
-                    self.update_changed()
+                    self.update_changed(True)
 
         for column_cell in column:
             if column_cell.value != 0:
@@ -131,11 +131,8 @@ class Sudoku():
         for cell in self.cells:
             if cell.solved == 1:
                 pass
-            else: self.update_cell(cell)
-
-            if cell.no_possible_values():
-                self.set_solvable_grid_state(False)
-
+            else: 
+                self.update_cell(cell)
             if cell.is_solvable():
                 cell.set_solved()
                 self.update_changed(True)
@@ -181,19 +178,21 @@ class Sudoku():
         """
         least_possible = 0
 
+        print(self.get_guessed_cells())
         for row in self.rows:
             for cell in row:
                 if cell.get_num_possible_values() == least_possible:
-                    return cell
-
-        least_possible += 1
+                    if cell not in self.get_guessed_cells():
+                        self.add_guessed_cell(cell)
+                        return cell          
+            least_possible += 1
 
     def no_blank_cells(self):
         for cell in self.cells:
             if cell.no_possible_values():
-                return False
+                return True
 
-        return True
+        return False
 
     def set_solvable_grid_state(self, value):
         self.solvable_grid_state = value
@@ -206,6 +205,12 @@ class Sudoku():
 
     def get_column(self, ID):
         return self.column[ID]
+
+    def get_guessed_cells(self):
+        return self.guessed_cells
+
+    def add_guessed_cell(self, cell):    
+        self.guessed_cells.append(cell)
 
     def add_solved_cell(self, cell):
         self.solved_cells.append(cell)
