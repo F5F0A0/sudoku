@@ -1,6 +1,7 @@
-from sudoku import *
-from cell import *
+from droodbot.sudoku import *
+from droodbot.cell import *
 import copy as copy
+
 
 def algorithm_1(sudoku):
     """
@@ -17,6 +18,7 @@ def algorithm_1(sudoku):
         sudoku.update_all_cells()
 
     return sudoku
+
 
 def algorithm_2(sudoku):
     """

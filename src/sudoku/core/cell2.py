@@ -7,7 +7,7 @@ class Cell2:
         self.candidates = candidates if candidates is not None else set()
 
     def __repr__(self):
-        return "Cell(value={self.value}, given={self.given})"
+        return f"Cell(value={self.value}, given={self.given})"
 
     def __eq__(self, value):
         return self.value == value

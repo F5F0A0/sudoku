@@ -1,9 +1,10 @@
-from cell import *
+from droodbot.cell import *
 import math as math
 
-class Sudoku():
 
-    def __init__(self,sudoku):
+class Sudoku:
+
+    def __init__(self, sudoku):
 
         self.initial_sudoku = sudoku
         self.dimension = int(math.sqrt(len(sudoku)))
@@ -48,13 +49,13 @@ class Sudoku():
 
         Works on any length array.
         """
-        seen_numbers = [0]*len(array)
+        seen_numbers = [0] * len(array)
 
         for cell in array:
             if cell.value == 0:
                 pass
-            elif not seen_numbers[cell.value-1]:
-                seen_numbers[cell.value-1] = 1
+            elif not seen_numbers[cell.value - 1]:
+                seen_numbers[cell.value - 1] = 1
             else:
                 return 1
 
@@ -109,15 +110,14 @@ class Sudoku():
         row = self.rows[cell.get_row_ID()]
         column = self.columns[cell.get_column_ID()]
 
-        #Compare values of the solved cells in a row to a given cell. Remove that value from the possible values the given cell can have.
+        # Compare values of the solved cells in a row to a given cell. Remove that value from the possible values the given cell can have.
         for row_cell in row:
-            if row_cell.value !=0:
+            if row_cell.value != 0:
                 removed = cell.removed_possible_value(row_cell.value)
                 if removed == True:
                     self.update_changed(True)
 
-
-        #Compare values of the solved cells in a row to a given cell. Remove that value from the possible values the given cell can have.
+        # Compare values of the solved cells in a row to a given cell. Remove that value from the possible values the given cell can have.
         for column_cell in column:
             if column_cell.value != 0:
                 removed = cell.removed_possible_value(column_cell.value)
@@ -164,7 +164,7 @@ class Sudoku():
 
         for value in self.initial_sudoku:
 
-            cell = Cell(id,column,row,int(value),self.dimension)
+            cell = Cell(id, column, row, int(value), self.dimension)
             self.cells.append(cell)
             self.rows[row].append(cell)
             self.columns[column].append(cell)
@@ -222,9 +222,3 @@ class Sudoku():
 
     def remove_solved_cell(self, cell):
         self.solved_cells.pop()
-
-
-
-
-
-
