@@ -8,10 +8,9 @@ def test_default_cell_value_zero():
 
 def test_default_cell_is_given_false():
     c = Cell()
-    assert not c.is_given
+    assert c.is_given is False
 
 
 def test_default_cell_candidates_empty_set():
     c = Cell()
-    assert type(c.candidates) is set
-    assert len(c.candidates) == 0
+    assert c.candidates == set()

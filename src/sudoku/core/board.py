@@ -25,12 +25,9 @@ class Board:
         return row * self.size + col
 
     def get_cell(self, row, col):
-        if 0 <= row < self.size and 0 <= col < self.size:
-            return self.cells[self._index(row, col)]
-        else:
-            raise IndexError(f"Index {self._index} ({row}, {col}) out of range.")
+        return self.cells[self._index(row, col)]
 
-    def set_value(self, row, col, value):
+    def set_cell(self, row, col, value):
         if not (0 <= value <= self.size):
             raise ValueError(f"Value {value} out of range [0, {self.size}]")
         self.get_cell(row, col).value = value
@@ -56,3 +53,23 @@ class Board:
             for j in range(self.box_size):
                 ret.append(self.get_cell(top_row + i, top_col + j))
         return ret
+
+    def is_cell_empty(self, row, col):
+        return self.get_cell(row, col).value == 0
+
+    def empty_cells(self):
+        ret = []
+        for row in range(self.size):
+            for col in range(self.size):
+                if self.is_cell_empty(row, col):
+                    ret.append((row, col))
+        return ret
+
+
+if __name__ == "__main__":
+    b = Board()
+    print(len(b.empty_cells()))  # 81 on a fresh board
+    b.set_cell(0, 0, 5)
+    b.set_cell(0, 1, 3)
+    print(len(b.empty_cells()))  # 79
+    print(b.empty_cells()[:3])  # [(0, 2), (0, 3), (0, 4)] — first three empties
