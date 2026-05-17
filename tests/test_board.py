@@ -1,1 +1,1 @@
-from board import Board
+from sudoku.core.board import Board
