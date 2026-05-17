@@ -1,4 +1,4 @@
-class Cell2:
+class Cell:
     def __init__(
         self, value: int = 0, is_given: bool = False, candidates: set[int] | None = None
     ):

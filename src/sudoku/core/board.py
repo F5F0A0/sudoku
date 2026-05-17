@@ -1,13 +1,13 @@
-from sudoku.core.cell2 import Cell2
+from sudoku.core.cell import Cell
 
 
-class Board2:
+class Board:
     def __init__(self, box_size=3):
         if not isinstance(box_size, int) or box_size < 1:
             raise ValueError(f"box_size must be a positive integer, got {box_size!r}")
         self.box_size = box_size
         self.size = box_size**2
-        self.cells = [Cell2() for _ in range(self.size**2)]
+        self.cells = [Cell() for _ in range(self.size**2)]
 
     def __repr__(self):
         pass
