@@ -11,7 +11,9 @@ class Cell:
     candidates: set[int] = field(default_factory=set)
 
     def __post_init__(self):
-        if not self.candidates:
+        if self.value != 0:
+            self.candidates = set()
+        else:
             self.candidates = set(range(1, self.size + 1))
 
     def set_value(self, value: int) -> None:
@@ -32,7 +34,9 @@ class Cell:
 
 
 if __name__ == "__main__":
-    c = Cell(row=0, col=0)
-    print(c)
-    print(c.candidates)
-    print(c.is_empty)
+    c1 = Cell(row=0, col=0)  # empty
+    c2 = Cell(row=0, col=0, value=5)  # filled
+    c3 = Cell(row=0, col=0, value=5, is_given=True)  # given
+    print(c1.candidates)  # {1, 2, 3, 4, 5, 6, 7, 8, 9}
+    print(c2.candidates)  # set()
+    print(c3.candidates)  # set()
