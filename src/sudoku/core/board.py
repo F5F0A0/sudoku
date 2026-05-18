@@ -9,11 +9,23 @@ class Board:
         self.size = box_size**2
         self.cells = [Cell() for _ in range(self.size**2)]
 
-    def __repr__(self):
-        pass
-
     def __str__(self):
-        pass
+        ret = ""
+        for row in range(self.size):
+            if row % self.box_size == 0:
+                ret += "---------------------------------------\n"
+            for col in range(self.size):
+                value = str(self.get_cell(row, col).value)
+                if col == 0:
+                    ret += f"| {value}"
+                elif col == self.size - 1:
+                    ret += f" | {value} |\n"
+                elif col % self.box_size == 0:
+                    ret += f" || {value}"
+                else:
+                    ret += f" | {value}"
+        ret += "---------------------------------------\n"
+        return ret
 
     def _validate_index(self, value, name):
         if not (0 <= value < self.size):
@@ -42,6 +54,9 @@ class Board:
         self._validate_index(col_index, "col_index")
         return self.cells[col_index :: self.size]
 
+    def _box_index(self, row, col):
+        return (row // self.box_size) * self.box_size + col // self.box_size
+
     def get_box(self, box_index):
         self._validate_index(box_index, "box_index")
         box_row = box_index // self.box_size
@@ -65,6 +80,25 @@ class Board:
                     ret.append((row, col))
         return ret
 
+    def is_valid_move(self, row, col, value):
+        # return true if the value is not present
+        # in its row, col, or box
+
+        for cell in self.get_col(col):
+            if cell.value == value:
+                return False
+        for cell in self.get_row(row):
+            if cell.value == value:
+                return False
+        for cell in self.get_box(self._box_index(row, col)):
+            if cell.value == value:
+                return False
+        return True
+
+    def is_solved(self):
+
+        pass
+
 
 if __name__ == "__main__":
     b = Board()
@@ -73,3 +107,6 @@ if __name__ == "__main__":
     b.set_cell(0, 1, 3)
     print(len(b.empty_cells()))  # 79
     print(b.empty_cells()[:3])  # [(0, 2), (0, 3), (0, 4)] — first three empties
+    print(b)
+    print(b.is_valid_move(0, 1, 3))
+    print(b.is_valid_move(0, 1, 7))
