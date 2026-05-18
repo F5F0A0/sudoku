@@ -5,9 +5,10 @@ class Cell():
         self.cell_ID = cell_ID
         self.column_ID = column_ID
         self.row_ID = row_ID
+        self.box_ID = ""
+        self.Index = {"ROW_ID": row_ID, "BOX_ID": row_ID}
         self.value = value
         self.solved = False
-        self.start_of_branch = False
         self.values = []
         self.previous_possible_values = {}
 
@@ -78,11 +79,13 @@ class Cell():
         possible_values = self.get_possible_values()
 
         for value in range(1,len(possible_values)+1):
+            print(value)
+            print(possible_values[value])
             if possible_values[value] == True:
                 self.set_value(value)
                 self.set_possible_values(value, False)
                 self.update_solved(True)
-                return 0
+
 
     def set_start_of_branch(self, value):
         self.start_of_branch = value
@@ -128,6 +131,9 @@ class Cell():
 
     def set_value(self, value):
         self.value = value
+
+    def set_box_ID(self, value):
+        self.box_ID = value
 
     def get_solved(self):
         return self.solved

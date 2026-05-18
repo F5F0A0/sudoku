@@ -1,16 +1,20 @@
-from droodbot.cell import *
+from cell import *
 import math as math
 
+class Sudoku():
 
-class Sudoku:
-
-    def __init__(self, sudoku):
+    def __init__(self,sudoku):
 
         self.initial_sudoku = sudoku
         self.dimension = int(math.sqrt(len(sudoku)))
         self.rows = []
         self.columns = []
         self.cells = []
+        self.boxes = {
+                      "TOP_LEFT":[], "TOP_MID":[], "TOP_RIGHT"[],
+                      "MIDDLE_LEFT":[], "MIDDLE_MIDDLE"[]:, "MIDDLE_RIGHT":[],
+                      "BOTTOM_LEFT":[], "BOTTOM_MIDDLE":[], "BOTTOM_RIGHT"[]:
+                      }
         self.solved = 0
         self.init_rows()
         self.init_columns()
@@ -27,6 +31,20 @@ class Sudoku:
 
         for i in range(0, self.dimension):
             self.columns.append([])
+
+    # def init_boxes(self):
+    #
+    #     self.boxes["TOP_LEFT"] = [self.rows[0][0], self.rows[0][1], self.rows[0][1]]
+    #     self.boxes["TOP_MIDDLE"]
+    #     self.boxes["TOP_RIGHT"]
+    #     self.boxes["MIDDLE_LEFT"
+    #     self.boxes["MIDDLE_MIDDLE"]
+    #     self.boxes["MIDDLE_RIGHT"]
+    #     self.boxes["BOTTOM_LEFT"]
+    #     self.boxes["BOTTOM_MIDDLE"]
+    #     self.boxes["BOTTOM_RIGHT"]
+
+
 
     def changed(self):
         """
@@ -49,13 +67,13 @@ class Sudoku:
 
         Works on any length array.
         """
-        seen_numbers = [0] * len(array)
+        seen_numbers = [0]*len(array)
 
         for cell in array:
             if cell.value == 0:
                 pass
-            elif not seen_numbers[cell.value - 1]:
-                seen_numbers[cell.value - 1] = 1
+            elif not seen_numbers[cell.value-1]:
+                seen_numbers[cell.value-1] = 1
             else:
                 return 1
 
@@ -110,14 +128,15 @@ class Sudoku:
         row = self.rows[cell.get_row_ID()]
         column = self.columns[cell.get_column_ID()]
 
-        # Compare values of the solved cells in a row to a given cell. Remove that value from the possible values the given cell can have.
+        #Compare values of the solved cells in a row to a given cell. Remove that value from the possible values the given cell can have.
         for row_cell in row:
-            if row_cell.value != 0:
+            if row_cell.value !=0:
                 removed = cell.removed_possible_value(row_cell.value)
                 if removed == True:
                     self.update_changed(True)
 
-        # Compare values of the solved cells in a row to a given cell. Remove that value from the possible values the given cell can have.
+
+        #Compare values of the solved cells in a row to a given cell. Remove that value from the possible values the given cell can have.
         for column_cell in column:
             if column_cell.value != 0:
                 removed = cell.removed_possible_value(column_cell.value)
@@ -138,9 +157,9 @@ class Sudoku:
                 pass
             else:
                 self.update_cell(cell)
-            if cell.is_solvable() == True:
-                cell.set_solved()
-                self.update_changed(True)
+                if cell.is_solvable() == True:
+                    cell.set_solved()
+                    self.update_changed(True)
 
     def row_missing_values(self, row):
 
@@ -164,7 +183,7 @@ class Sudoku:
 
         for value in self.initial_sudoku:
 
-            cell = Cell(id, column, row, int(value), self.dimension)
+            cell = Cell(id,column,row,int(value),self.dimension)
             self.cells.append(cell)
             self.rows[row].append(cell)
             self.columns[column].append(cell)
@@ -185,12 +204,23 @@ class Sudoku:
 
         for row in self.rows:
             for cell in row:
-                if cell.get_num_possible_values() == least_possible:
+                solved = cell.is_solved()
+                if solved:
+                    pass
+                else:
+                    cell.get_num_possible_values() == least_possible
                     if cell not in self.get_guessed_cells():
                         self.add_guessed_cell(cell)
                         self.update_changed(True)
                         return cell
+
             least_possible += 1
+
+    def naked_single(self):
+        for cell in self.cells:
+            if cell.is_solved() == False and cell.get_num_possible_values() == 1:
+                cell.set_solved()
+                self.update_changed(True)
 
     def no_blank_cells(self):
         for cell in self.cells:
@@ -222,3 +252,9 @@ class Sudoku:
 
     def remove_solved_cell(self, cell):
         self.solved_cells.pop()
+
+
+
+
+
+

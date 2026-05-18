@@ -1,7 +1,6 @@
-from droodbot.sudoku import *
-from droodbot.cell import *
+from sudoku import *
+from cell import *
 import copy as copy
-
 
 def algorithm_1(sudoku):
     """
@@ -19,8 +18,7 @@ def algorithm_1(sudoku):
 
     return sudoku
 
-
-def algorithm_2(sudoku):
+def algorithm_2(sudoku, recursion = 0):
     """
     A simple recursive algorithm. First tries to solve the sudoku
     by comparing unsolved cells to solved cells and hoping that
@@ -39,7 +37,7 @@ def algorithm_2(sudoku):
     then the algorithm will go back to the branch previous to that
     one.
     """
-
+    print("recursion layer = " + str(recursion))
     sudoku.guessed_cells = []
 
     while not sudoku.solved:
@@ -51,21 +49,32 @@ def algorithm_2(sudoku):
             if cell_solved == False:
                 no_possible_values = cell.no_possible_values()
                 if no_possible_values == True:
-                    print("here")
+                    #print("no possible values")
                     return sudoku
 
         if sudoku.changed() == False:
-            print("Guessing")
+            sudoku.print_grid()
+            #print("Recursion layer: " + str(recursion) + " Guessing")
             cell = sudoku.easiest_cell()
-            no_possible_values = cell.no_possible_values()
+            cell_copy = copy.deepcopy(cell)
+            try:
+                no_possible_values = cell.no_possible_values()
+            except:
+                #print("returned from recursion")
+                return sudoku
+
             print(no_possible_values)
 
-            while not no_possible_values:
+            while no_possible_values == False:
                 cell.guess_lowest()
-                possibly_solved_sudoku = algorithm_2(copy.deepcopy(sudoku))
+                possibly_solved_sudoku = algorithm_2(copy.deepcopy(sudoku), recursion + 1)
+                print("returned from recursion layer" + str(recursion))
+                print(possibly_solved_sudoku)
                 solved = possibly_solved_sudoku.is_solved()
                 if solved == True:
                     sudoku = possibly_solved_sudoku
-                else:
-                    cell.update_solved(False)
                 no_possible_values = cell.no_possible_values()
+                cell.update_solved(False)
+
+
+

@@ -1,6 +1,5 @@
-from droodbot.sudoku import *
-from droodbot.solving_algorithms import *
-
+from sudoku import *
+from solving_algorithms import *
 
 def main():
 
@@ -32,10 +31,9 @@ def main():
     sudoku = nine_by_nine_sudoku
     solvable_sudoku = Sudoku(sudoku.split(","))
     # solvable_sudoku.solve()
-    # solved_sudoku = algorithm_1(solvable_sudoku)
+    #solved_sudoku = algorithm_1(solvable_sudoku)
     solved_sudoku = algorithm_2(solvable_sudoku)
 
     solved_sudoku.print_grid()
-
 
 main()
