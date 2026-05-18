@@ -1,7 +1,3 @@
-"""
-A Cell in Sudoku.
-"""
-
 from dataclasses import dataclass, field
 
 
