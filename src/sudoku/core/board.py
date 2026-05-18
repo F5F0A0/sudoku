@@ -96,8 +96,7 @@ class Board:
         return True
 
     def is_solved(self):
-
-        pass
+        return all(cell != 0 for cell in self.cells) and is_valid(grid)
 
 
 if __name__ == "__main__":
