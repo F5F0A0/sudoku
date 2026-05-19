@@ -167,9 +167,21 @@ class Board:
         used = set(cell.value for cell in self.peers(i, j) if not cell.is_empty)
         return set(range(1, self.size + 1)) - used
 
-    def copy():
+    def copy(self) -> "Board":
         """deep-enough copy that the solver can mutate without touching the original. Has one gotcha: don't share the candidates set between copies."""
-        pass
+        new_board = Board(
+            grid=[[0] * self.size for _ in range(self.size)],
+            box_row_size=self.box_row_size,
+            box_col_size=self.box_col_size,
+        )
+        for i in range(self.size):
+            for j in range(self.size):
+                old = self.cell(i, j)
+                new = new_board.cell(i, j)
+                new.value = old.value
+                new.is_given = old.is_given
+                new.candidates = old.candidates.copy()
+        return new_board
 
     def __str__(self):
         s = ""
@@ -199,6 +211,7 @@ class Board:
 
 if __name__ == "__main__":
     from sudoku.core.basic_9x9_solver import parse
+    from sudoku.solver.backtracking import BacktrackingSolver
 
     inkala = parse(
         "8........"
@@ -223,3 +236,7 @@ if __name__ == "__main__":
     print(b2)
     print(f"is_valid: {b2.is_valid()}")
     print(f"is_solved: {b2.is_solved()}")
+
+    my_solver = BacktrackingSolver()
+    sol = my_solver.solve(b)
+    print(sol)
