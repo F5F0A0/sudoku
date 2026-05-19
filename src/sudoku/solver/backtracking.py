@@ -12,7 +12,7 @@ class BacktrackingSolver:
     def _solve(self, g: Grid) -> bool:
         cell = (
             g.find_first_empty_cell()
-        )  # find_empty() returns None if the grid is fully solved
+        )  # find_first_empty_cell() returns None if the grid is fully solved
         if cell is None:
             return True  # the grid is solved
         for v in g.get_cell_candidates(cell.row, cell.col):
