@@ -90,6 +90,10 @@ class Grid:
                     is_given=(value != 0),
                     size=self.size,
                 )
+        if not self.is_grid_valid():
+            raise ValueError(
+                "Initial grid violates Sudoku rules (duplicate values in row, column, or box)."
+            )
 
     def get_cell(self, i: int, j: int) -> Cell:
         return self.grid[i][j]
