@@ -137,19 +137,35 @@ class Board:
         ]
         return rows + cols + boxes
 
-    def is_valid():
-        pass
+    def is_valid(self) -> bool:
+        """Return True if no row, column, or box contains a duplicate nonzero value.
 
-    def is_solved():
-        pass
+        Does not check completeness; an empty grid is valid by this definition.
+        """
+        for unit in self.units():
+            value_set = set()
+            for cell in unit:
+                if cell.is_empty:
+                    continue
+                if cell.value in value_set:
+                    return False
+                value_set.add(cell.value)
+        return True
 
-    def peers(i, j):
+    def is_solved(self) -> bool:
+        """Return True iff the grid is fully filled and has no rule violations."""
+        return self.find_empty() is None and self.is_valid()
+
+    def peers(self, i, j) -> set[Cell]:
         """all cells in the same row, column, or box as (i, j), excluding (i, j) itself. Set of Cells."""
-        pass
+        peers = set(self.row(i)) | set(self.col(j)) | set(self.box(i, j))
+        peers.discard(self.cell(i, j))
+        return peers
 
-    def candidates(i, j):
+    def candidates(self, i, j) -> set[int]:
         """digits 1..size that could legally go at (i, j). Empty set if the cell is already filled."""
-        pass
+        used = set(cell.value for cell in self.peers(i, j) if not cell.is_empty)
+        return set(range(1, self.size + 1)) - used
 
     def copy():
         """deep-enough copy that the solver can mutate without touching the original. Has one gotcha: don't share the candidates set between copies."""
@@ -199,7 +215,11 @@ if __name__ == "__main__":
     # for cell in b.col(1):
     #     print(cell.value)
     print(b)
+    print(f"is_valid: {b.is_valid()}")
+    print(f"is_solved: {b.is_solved()}")
 
     small = parse("01..............")
     b2 = Board(small)
     print(b2)
+    print(f"is_valid: {b2.is_valid()}")
+    print(f"is_solved: {b2.is_solved()}")
