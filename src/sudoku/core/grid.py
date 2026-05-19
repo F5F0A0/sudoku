@@ -3,7 +3,7 @@ from math import isqrt
 from sudoku.core.cell import Cell
 
 
-class Board:
+class Grid:
     """An NxN Sudoku grid composed of Cell objects.
 
     Supports any size N such that N = box_row_size * box_col_size, with both
@@ -12,9 +12,9 @@ class Board:
     box_row_size and box_col_size explicitly.
 
     Examples:
-        Board([[0]*9 for _ in range(9)])                       # 9x9, 3x3 boxes
-        Board(grid, box_row_size=2, box_col_size=3)                    # 6x6 with 2x3 boxes
-        Board([[0]*16 for _ in range(16)], box_row_size=2, box_col_size=8)  # 16x16 with 2x8 boxes
+        Grid([[0]*9 for _ in range(9)])                       # 9x9, 3x3 boxes
+        Grid(grid, box_row_size=2, box_col_size=3)                    # 6x6 with 2x3 boxes
+        Grid([[0]*16 for _ in range(16)], box_row_size=2, box_col_size=8)  # 16x16 with 2x8 boxes
 
     Attributes:
         size: the N in NxN.
@@ -29,7 +29,7 @@ class Board:
         box_row_size: int = None,
         box_col_size: int = None,
     ):
-        """Build a Board from a 2D grid of integers.
+        """Build a Grid from a 2D grid of integers.
 
         Args:
             grid: NxN list of lists of ints. A value of 0 means empty;
@@ -70,7 +70,7 @@ class Board:
             )
 
         # Validate row lengths before building any cells, so we don't leave
-        # the Board in a half-constructed state on bad input.
+        # the Grid in a half-constructed state on bad input.
         for i, row in enumerate(grid):
             if len(row) != self.size:
                 raise ValueError(
@@ -91,18 +91,18 @@ class Board:
                     size=self.size,
                 )
 
-    def cell(self, i: int, j: int) -> Cell:
+    def get_cell(self, i: int, j: int) -> Cell:
         return self.grid[i][j]
 
-    def row(self, i: int) -> list[Cell]:
+    def get_row(self, i: int) -> list[Cell]:
         """Return all Cells in row i"""
         return self.grid[i]
 
-    def col(self, j: int) -> list[Cell]:
+    def get_col(self, j: int) -> list[Cell]:
         """Return all Cells in col j"""
         return [row[j] for row in self.grid]
 
-    def box(self, i: int, j: int) -> list[Cell]:
+    def get_box(self, i: int, j: int) -> list[Cell]:
         """Return all Cells in a box containing cell with index (i, j)"""
         row_start = (i // self.box_row_size) * self.box_row_size
         col_start = (j // self.box_col_size) * self.box_col_size
@@ -114,11 +114,11 @@ class Board:
             for c in range(col_start, col_end)
         ]
 
-    def empty_cells(self) -> list[Cell]:
+    def get_empty_cells(self) -> list[Cell]:
         """returns list of all empty Cells"""
         return [cell for row in self.grid for cell in row if cell.is_empty]
 
-    def find_empty(self) -> Cell | None:
+    def find_first_empty_cell(self) -> Cell | None:
         """returns the first empty Cell in row-major order, or None if full"""
         for row in self.grid:
             for cell in row:
@@ -126,23 +126,23 @@ class Board:
                     return cell
         return None
 
-    def units(self) -> list[list[Cell]]:
-        """All rows, columns, and boxes of the board as lists of Cells."""
-        rows = [self.row(i) for i in range(self.size)]
-        cols = [self.col(j) for j in range(self.size)]
+    def get_all_units(self) -> list[list[Cell]]:
+        """All rows, columns, and boxes of the grid as lists of Cells."""
+        rows = [self.get_row(i) for i in range(self.size)]
+        cols = [self.get_col(j) for j in range(self.size)]
         boxes = [
-            self.box(r, c)
+            self.get_box(r, c)
             for r in range(0, self.size, self.box_row_size)
             for c in range(0, self.size, self.box_col_size)
         ]
         return rows + cols + boxes
 
-    def is_valid(self) -> bool:
+    def is_grid_valid(self) -> bool:
         """Return True if no row, column, or box contains a duplicate nonzero value.
 
         Does not check completeness; an empty grid is valid by this definition.
         """
-        for unit in self.units():
+        for unit in self.get_all_units():
             value_set = set()
             for cell in unit:
                 if cell.is_empty:
@@ -152,36 +152,38 @@ class Board:
                 value_set.add(cell.value)
         return True
 
-    def is_solved(self) -> bool:
+    def is_grid_solved(self) -> bool:
         """Return True iff the grid is fully filled and has no rule violations."""
-        return self.find_empty() is None and self.is_valid()
+        return self.find_first_empty_cell() is None and self.is_grid_valid()
 
-    def peers(self, i, j) -> set[Cell]:
+    def get_cell_peers(self, i, j) -> set[Cell]:
         """all cells in the same row, column, or box as (i, j), excluding (i, j) itself. Set of Cells."""
-        peers = set(self.row(i)) | set(self.col(j)) | set(self.box(i, j))
-        peers.discard(self.cell(i, j))
+        peers = set(self.get_row(i)) | set(self.get_col(j)) | set(self.get_box(i, j))
+        peers.discard(self.get_cell(i, j))
         return peers
 
-    def candidates(self, i, j) -> set[int]:
+    def get_cell_candidates(self, i, j) -> set[int]:
         """digits 1..size that could legally go at (i, j). Empty set if the cell is already filled."""
-        used = set(cell.value for cell in self.peers(i, j) if not cell.is_empty)
+        used = set(
+            cell.value for cell in self.get_cell_peers(i, j) if not cell.is_empty
+        )
         return set(range(1, self.size + 1)) - used
 
-    def copy(self) -> "Board":
+    def copy_grid(self) -> "Grid":
         """deep-enough copy that the solver can mutate without touching the original. Has one gotcha: don't share the candidates set between copies."""
-        new_board = Board(
+        new_grid = Grid(
             grid=[[0] * self.size for _ in range(self.size)],
             box_row_size=self.box_row_size,
             box_col_size=self.box_col_size,
         )
         for i in range(self.size):
             for j in range(self.size):
-                old = self.cell(i, j)
-                new = new_board.cell(i, j)
+                old = self.get_cell(i, j)
+                new = new_grid.get_cell(i, j)
                 new.value = old.value
                 new.is_given = old.is_given
                 new.candidates = old.candidates.copy()
-        return new_board
+        return new_grid
 
     def __str__(self):
         s = ""
@@ -224,18 +226,18 @@ if __name__ == "__main__":
         "..85...1."
         ".9....4.."
     )
-    b = Board(inkala)
+    b = Grid(inkala)
     # for cell in b.col(1):
     #     print(cell.value)
     print(b)
-    print(f"is_valid: {b.is_valid()}")
-    print(f"is_solved: {b.is_solved()}")
+    print(f"is_valid: {b.is_grid_valid()}")
+    print(f"is_solved: {b.is_grid_solved()}")
 
     small = parse("01..............")
-    b2 = Board(small)
+    b2 = Grid(small)
     print(b2)
-    print(f"is_valid: {b2.is_valid()}")
-    print(f"is_solved: {b2.is_solved()}")
+    print(f"is_valid: {b2.is_grid_valid()}")
+    print(f"is_solved: {b2.is_grid_solved()}")
 
     my_solver = BacktrackingSolver()
     sol = my_solver.solve(b)

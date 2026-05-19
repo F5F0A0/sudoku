@@ -1,19 +1,21 @@
-from sudoku.core.board import Board
+from sudoku.core.grid import Grid
 
 
 class BacktrackingSolver:
-    def solve(self, b: Board) -> Board | None:
+    def solve(self, b: Grid) -> Grid | None:
         """Solve the grid in place with backtracking."""
-        sol = b.copy()
+        sol = b.copy_grid()
         if self._solve(sol):
             return sol
         return None
 
-    def _solve(self, b: Board) -> bool:
-        cell = b.find_empty()  # find_empty() returns None if the grid is fully solved
+    def _solve(self, b: Grid) -> bool:
+        cell = (
+            b.find_first_empty_cell()
+        )  # find_empty() returns None if the grid is fully solved
         if cell is None:
             return True  # the grid is solved
-        for v in b.candidates(cell.row, cell.col):
+        for v in b.get_cell_candidates(cell.row, cell.col):
             cell.value = v
             if self._solve(b):
                 return True  # found a solution

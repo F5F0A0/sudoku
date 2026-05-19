@@ -1,1 +1,1 @@
-from sudoku.core.board import Board
+from sudoku.core.grid import Grid
