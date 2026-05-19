@@ -95,15 +95,15 @@ class Board:
         return self.grid[i][j]
 
     def row(self, i: int) -> list[Cell]:
-        """Return all cells in row i"""
+        """Return all Cells in row i"""
         return self.grid[i]
 
     def col(self, j: int) -> list[Cell]:
-        """Return all cells in col j"""
+        """Return all Cells in col j"""
         return [row[j] for row in self.grid]
 
     def box(self, i: int, j: int) -> list[Cell]:
-        """Return all cells in a box containing cell with index (i, j)"""
+        """Return all Cells in a box containing cell with index (i, j)"""
         row_start = (i // self.box_row_size) * self.box_row_size
         col_start = (j // self.box_col_size) * self.box_col_size
         row_end = row_start + self.box_row_size
@@ -113,6 +113,47 @@ class Board:
             for r in range(row_start, row_end)
             for c in range(col_start, col_end)
         ]
+
+    def empty_cells(self) -> list[Cell]:
+        """returns list of all empty Cells"""
+        return [cell for row in self.grid for cell in row if cell.is_empty]
+
+    def find_empty(self) -> Cell | None:
+        """returns the first empty Cell in row-major order, or None if full"""
+        for row in self.grid:
+            for cell in row:
+                if cell.is_empty:
+                    return cell
+        return None
+
+    def units(self) -> list[list[Cell]]:
+        """All rows, columns, and boxes of the board as lists of Cells."""
+        rows = [self.row(i) for i in range(self.size)]
+        cols = [self.col(j) for j in range(self.size)]
+        boxes = [
+            self.box(r, c)
+            for r in range(0, self.size, self.box_row_size)
+            for c in range(0, self.size, self.box_col_size)
+        ]
+        return rows + cols + boxes
+
+    def is_valid():
+        pass
+
+    def is_solved():
+        pass
+
+    def peers(i, j):
+        """all cells in the same row, column, or box as (i, j), excluding (i, j) itself. Set of Cells."""
+        pass
+
+    def candidates(i, j):
+        """digits 1..size that could legally go at (i, j). Empty set if the cell is already filled."""
+        pass
+
+    def copy():
+        """deep-enough copy that the solver can mutate without touching the original. Has one gotcha: don't share the candidates set between copies."""
+        pass
 
     def __str__(self):
         s = ""
