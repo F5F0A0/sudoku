@@ -138,18 +138,22 @@ class Board:
 if __name__ == "__main__":
     from sudoku.core.basic_9x9_solver import parse
 
-    inkala = parse(
-        "8........"
-        "..36....."
-        ".7..9.2.."
-        ".5...7..."
-        "....457.."
-        "...1...3."
-        "..1....68"
-        "..85...1."
-        ".9....4.."
-    )
-    b = Board(inkala)
-    # for cell in b.col(1):
-    #     print(cell.value)
-    print(b)
+    # inkala = parse(
+    #     "8........"
+    #     "..36....."
+    #     ".7..9.2.."
+    #     ".5...7..."
+    #     "....457.."
+    #     "...1...3."
+    #     "..1....68"
+    #     "..85...1."
+    #     ".9....4.."
+    # )
+    # b = Board(inkala)
+    # # for cell in b.col(1):
+    # #     print(cell.value)
+    # print(b)
+
+    small = parse("01..............")
+    b2 = Board(small)
+    print(b2)

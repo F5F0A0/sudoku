@@ -1,16 +1,38 @@
-def parse(s: str) -> list[list[int]]:
-    """Parse an 81-character puzzle string into a 9x9 grid of ints (0 for empty)."""
-    if len(s) != 81:
-        raise ValueError("Input length must be 81")
-    valid = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."}
-    rows, cols = 9, 9
+from math import isqrt
+
+
+def parse(
+    s: str, box_row_size: int | None = None, box_col_size: int | None = None
+) -> list[list[int]]:
+    """Parse a puzzle string into a grid of ints (0 for empty). Pass in a perfect square or specify box_row_size and box_col_size."""
+    size = 0
+    if box_row_size is None and box_col_size is None:
+        root = isqrt(len(s))
+        if root * root != len(s):
+            raise ValueError(
+                f"Size {len(s)} is not a perfect square. Please pass in box_row_size and box_col_size."
+            )
+        size = root
+    elif box_row_size is not None and box_col_size is not None:
+        size = box_row_size * box_col_size
+        if len(s) != size * size:
+            raise ValueError(
+                "passed in box_row_size and box_col_size do not match passed in string length"
+            )
+    else:
+        raise ValueError("Must pass both box_row_size and box_col_size, or neither.")
+    if size == 0:
+        raise ValueError("size == 0")
+    valid = {str(d) for d in range(size + 1)}
+    valid.add(".")
     grid = []
-    for i in range(rows):
+    print(size)
+    for i in range(size):
         row = []
-        for j in range(cols):
-            index = i * 9 + j
+        for j in range(size):
+            index = i * size + j
             if s[index] not in valid:
-                raise ValueError("Values must be 0-9 or .")
+                raise ValueError(f"Values must be 0-{size} or .")
             if s[index] == ".":
                 row.append(0)
             else:
