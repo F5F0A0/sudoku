@@ -26,7 +26,6 @@ def parse(
     valid = {str(d) for d in range(size + 1)}
     valid.add(".")
     grid = []
-    print(size)
     for i in range(size):
         row = []
         for j in range(size):

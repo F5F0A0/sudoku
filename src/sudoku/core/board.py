@@ -116,9 +116,10 @@ class Board:
 
     def __str__(self):
         s = ""
+        row_len = 0
         for i in range(self.size):
-            if i % self.box_row_size == 0:
-                s += "---------------------------------------\n"
+            if i % self.box_row_size == 0 and i != 0:
+                s += "-" * (row_len - 1) + "\n"
             for j in range(self.size):
                 value = str(self.grid[i][j].value)
                 if value == "0":
@@ -131,28 +132,32 @@ class Board:
                     s += f" || {value}"
                 else:
                     s += f" | {value}"
-        s += "---------------------------------------"
+                if i == 0 and j == self.size - 1:
+                    row_len = len(s)
+
+        s = "-" * (row_len - 1) + "\n" + s
+        s += "-" * (row_len - 1)
         return s
 
 
 if __name__ == "__main__":
     from sudoku.core.basic_9x9_solver import parse
 
-    # inkala = parse(
-    #     "8........"
-    #     "..36....."
-    #     ".7..9.2.."
-    #     ".5...7..."
-    #     "....457.."
-    #     "...1...3."
-    #     "..1....68"
-    #     "..85...1."
-    #     ".9....4.."
-    # )
-    # b = Board(inkala)
-    # # for cell in b.col(1):
-    # #     print(cell.value)
-    # print(b)
+    inkala = parse(
+        "8........"
+        "..36....."
+        ".7..9.2.."
+        ".5...7..."
+        "....457.."
+        "...1...3."
+        "..1....68"
+        "..85...1."
+        ".9....4.."
+    )
+    b = Board(inkala)
+    # for cell in b.col(1):
+    #     print(cell.value)
+    print(b)
 
     small = parse("01..............")
     b2 = Board(small)
